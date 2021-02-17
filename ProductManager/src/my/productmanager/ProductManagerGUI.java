@@ -6,9 +6,17 @@
 package my.productmanager;
 import productmanager.*;
 import javax.swing.table.*;
+import java.util.ArrayList;
+import java.io.File;
+import java.util.Scanner;
+import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
-public class ProductManagerGUI extends javax.swing.JFrame {
 
+public class ProductManagerGUI extends javax.swing.JFrame implements Serializable {
     /**
      * Creates new form ProductManagerGUI
      */
@@ -40,6 +48,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -163,6 +172,13 @@ public class ProductManagerGUI extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(jScrollPane2);
 
+        jButton2.setText("jButton2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -171,7 +187,10 @@ public class ProductManagerGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addGap(34, 34, 34)
+                        .addComponent(jButton1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
                 .addContainerGap())
@@ -180,13 +199,16 @@ public class ProductManagerGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(9, 9, 9)
-                        .addComponent(jButton1))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(9, 9, 9)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jPanel1.getAccessibleContext().setAccessibleName("");
@@ -222,21 +244,26 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         ProductManager.addProduct(newID, newName, newDescription, newPrice, 
                 newQuantity);
         
-        clear();
-        
+        clearFields();
+        addProductsToTable();
         // adds the data to the table, and refreshes the table to display the data
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        Object[] testing = {newID, newName, newDescription, newPrice, newQuantity};
-        model.addRow(testing);
-        jTable1.updateUI();
-        ProductManager.test();
+
+        
+//        Object[] testing = {newID, newName, newDescription, newPrice, newQuantity};
+//        model.addRow(testing);
+//        jTable1.updateUI();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField5ActionPerformed
 
-    public void clear() {
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        betterLoadFiles();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    public void clearFields() {
         // clears the text fields 
         jTextField1.setText("");
         jTextField2.setText("");
@@ -244,6 +271,64 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         jTextField4.setText("");
         jTextField5.setText("");
     }
+    
+    public void addProductsToTable(){
+        // this is the one that affects the add button
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        ArrayList<Product> tempProduct = ProductManager.getProductTable();
+        model.setRowCount(0);
+        
+        for (Product product : tempProduct) {
+            Object[] productToAdd = {product.getProductID(), product.getProductName(),
+                product.getProductDescription(), product.getProductPrice(),
+                product.getProductQuantity()};
+            model.addRow(productToAdd);
+            jTable1.updateUI();   
+        }
+        productmanager.ProductManager.betterWriteToFile();
+    }
+    
+//    public void loadFiles() throws FileNotFoundException {
+//        File loadFile = new File("InventoryData.txt");
+//        Scanner s = new Scanner(new File("InventoryData.txt"));
+//        ArrayList<Product> tempProduct = ProductManager.getProductTable();
+//        Product test = s.next();
+//        if (loadFile.exists()) {
+//            while (s.hasNext()){
+//                tempProduct.add(test);
+//            }
+//        } else {
+//            System.out.print("error");
+//        }
+//    }
+    
+    public void betterLoadFiles(){
+        // this is for loading files on launch
+
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        try {
+            
+            FileInputStream fileStream = new FileInputStream("InventoryData.txt");
+            ObjectInputStream objStream = new ObjectInputStream(fileStream);
+            Product loadedProduct = (Product) objStream.readObject();
+            
+            for (int i = 0; i < 3; i++) {
+                Object[] productToAdd = {loadedProduct.getProductID(), loadedProduct.getProductName(),
+                    loadedProduct.getProductDescription(), loadedProduct.getProductPrice(),
+                    loadedProduct.getProductQuantity()};
+
+                model.addRow(productToAdd);
+            }
+            jTable1.updateUI();  
+
+            objStream.close();
+        } catch (Exception e){
+            e.getStackTrace();
+            System.out.print(e);
+        }
+
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -275,12 +360,16 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new ProductManagerGUI().setVisible(true);
+                
             }
         });
     }
+    
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
