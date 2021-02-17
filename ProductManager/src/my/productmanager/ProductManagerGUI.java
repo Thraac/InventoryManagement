@@ -262,7 +262,9 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
         // TODO add your handling code here:
         betterLoadFiles();
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    
+    ArrayList<Product> tempProduct = ProductManager.getProductTable();
+    
     public void clearFields() {
         // clears the text fields 
         jTextField1.setText("");
@@ -271,11 +273,15 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
         jTextField4.setText("");
         jTextField5.setText("");
     }
+
+    public DefaultTableModel getTableInfo (){
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        return model;
+    }
     
     public void addProductsToTable(){
         // this is the one that affects the add button
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        ArrayList<Product> tempProduct = ProductManager.getProductTable();
         model.setRowCount(0);
         
         for (Product product : tempProduct) {
@@ -283,50 +289,52 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
                 product.getProductDescription(), product.getProductPrice(),
                 product.getProductQuantity()};
             model.addRow(productToAdd);
-            jTable1.updateUI();   
+            jTable1.updateUI();  
+            productmanager.ProductManager.betterWriteToFile();
         }
-        productmanager.ProductManager.betterWriteToFile();
+        
     }
-    
-//    public void loadFiles() throws FileNotFoundException {
-//        File loadFile = new File("InventoryData.txt");
-//        Scanner s = new Scanner(new File("InventoryData.txt"));
-//        ArrayList<Product> tempProduct = ProductManager.getProductTable();
-//        Product test = s.next();
-//        if (loadFile.exists()) {
-//            while (s.hasNext()){
-//                tempProduct.add(test);
-//            }
-//        } else {
-//            System.out.print("error");
-//        }
-//    }
     
     public void betterLoadFiles(){
         // this is for loading files on launch
-
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        
         try {
-            
+            // file loading from
             FileInputStream fileStream = new FileInputStream("InventoryData.txt");
-            ObjectInputStream objStream = new ObjectInputStream(fileStream);
-            Product loadedProduct = (Product) objStream.readObject();
+            // new held arrayList
+
+            ObjectInputStream loadedObjStream = new ObjectInputStream(fileStream); 
+            boolean cont = true;
             
-            for (int i = 0; i < 3; i++) {
-                Object[] productToAdd = {loadedProduct.getProductID(), loadedProduct.getProductName(),
-                    loadedProduct.getProductDescription(), loadedProduct.getProductPrice(),
-                    loadedProduct.getProductQuantity()};
+            try {
+                while (cont) {
+                    Product loadedProduct = (Product) loadedObjStream.readObject();
+                    if (loadedProduct != null) {
+                        tempProduct.add(loadedProduct);
+                    } else {
+                        cont = false;
+                    }
+                }
+            } catch (Exception e) {
+                System.out.print(e);
+            }
+            
+            for (Product product: tempProduct) {
+                Object[] productToAdd = {product.getProductID(), product.getProductName(),
+                    product.getProductDescription(), product.getProductPrice(),
+                    product.getProductQuantity()};
 
                 model.addRow(productToAdd);
+                productmanager.ProductManager.betterWriteToFile();
             }
+            loadedObjStream.close();
             jTable1.updateUI();  
 
-            objStream.close();
         } catch (Exception e){
             e.getStackTrace();
             System.out.print(e);
         }
-
     }
     
     /**
