@@ -14,9 +14,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 
 
-public class ProductManagerGUI extends javax.swing.JFrame implements Serializable {
+public class ProductManagerGUI extends javax.swing.JFrame {
     /**
      * Creates new form ProductManagerGUI
      */
@@ -45,10 +47,9 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
         jLabel5 = new javax.swing.JLabel();
         jTextField5 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jButton2 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -160,6 +161,13 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
             }
         });
 
+        jButton2.setText("Test");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -170,45 +178,35 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
         ));
         jScrollPane2.setViewportView(jTable1);
 
-        jScrollPane1.setViewportView(jScrollPane2);
-
-        jButton2.setText("jButton2");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButton2)
-                        .addGap(34, 34, 34)
-                        .addComponent(jButton1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(9, 9, 9)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton2)
+                            .addComponent(jButton1))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
         );
 
         jPanel1.getAccessibleContext().setAccessibleName("");
@@ -232,41 +230,68 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField4ActionPerformed
 
-    // add in the add function for inventory
+    // add in the ADD function for inventory
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
-        String newName = jTextField1.getText();
-        String newDescription = jTextField2.getText();
-        double newPrice = Double.parseDouble(jTextField3.getText());
-        int newQuantity = Integer.parseInt(jTextField4.getText());
-        int newID = Integer.parseInt(jTextField5.getText());
+        try {
+            String newName = jTextField1.getText();
+            String newDescription = jTextField2.getText();
+            double newPrice = Double.parseDouble(jTextField3.getText());
+            int newQuantity = Integer.parseInt(jTextField4.getText());
+            int newID = Integer.parseInt(jTextField5.getText());
+
+            ProductManager.addProduct(newID, newName, newDescription, newPrice, 
+                    newQuantity);
         
-        ProductManager.addProduct(newID, newName, newDescription, newPrice, 
-                newQuantity);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(errors, "Failed to add product\n" + 
+                    "Please fill out all forms before adding a product\n\n"
+                    + "ID should be a number\n" + "Name should be a word\n" + 
+                    "Description should be a few words\n"
+                    + "Price should be a decimal\n" + "Quantity should be a number");
+        }
         
         clearFields();
         addProductsToTable();
-        // adds the data to the table, and refreshes the table to display the data
-
-        
-//        Object[] testing = {newID, newName, newDescription, newPrice, newQuantity};
-//        model.addRow(testing);
-//        jTable1.updateUI();
+        jTable1.invalidate();
+        jTable1.repaint(); 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField5ActionPerformed
-
+   
+    // This is the REMOVE function
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        betterLoadFiles();
+
+        int ID = Integer.parseInt(jTextField5.getText());
+        model = (DefaultTableModel) jTable1.getModel();
+        
+        Product holdProduct = null;
+        int counter = -1;      
+        
+        for (Product product: tempProduct) {
+            counter++;
+            int holdID = product.getProductID();
+            if (holdID == ID) {
+                holdProduct = product;
+                model.removeRow(counter);
+            }
+        }
+        tempProduct.remove(holdProduct);
+        
+        clearFields();       
+        jTable1.invalidate();
+        jTable1.repaint(); 
     }//GEN-LAST:event_jButton2ActionPerformed
     
     ArrayList<Product> tempProduct = ProductManager.getProductTable();
+    DefaultTableModel model = null;
+    JFrame errors = new JFrame();
     
+    // clears the text fields     
     public void clearFields() {
-        // clears the text fields 
+        
         jTextField1.setText("");
         jTextField2.setText("");
         jTextField3.setText("");
@@ -274,14 +299,10 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
         jTextField5.setText("");
     }
 
-    public DefaultTableModel getTableInfo (){
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        return model;
-    }
-    
+    // this is the one that affects the add button    
     public void addProductsToTable(){
-        // this is the one that affects the add button
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        
+        model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
         
         for (Product product : tempProduct) {
@@ -289,24 +310,25 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
                 product.getProductDescription(), product.getProductPrice(),
                 product.getProductQuantity()};
             model.addRow(productToAdd);
-            jTable1.updateUI();  
+            ProductManager.sortID(tempProduct);
+            jTable1.invalidate();
+            jTable1.repaint();  
             productmanager.ProductManager.betterWriteToFile();
         }
-        
     }
     
+    // this is for loading files on launch
     public void betterLoadFiles(){
-        // this is for loading files on launch
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        
+        model = (DefaultTableModel) jTable1.getModel();
         
         try {
             // file loading from
             FileInputStream fileStream = new FileInputStream("InventoryData.txt");
-            // new held arrayList
-
             ObjectInputStream loadedObjStream = new ObjectInputStream(fileStream); 
             boolean cont = true;
             
+            // this loads all the data from the file and turns it back into Product
             try {
                 while (cont) {
                     Product loadedProduct = (Product) loadedObjStream.readObject();
@@ -318,8 +340,10 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
                 }
             } catch (Exception e) {
                 System.out.print(e);
+                
             }
             
+            // this adds everything back into the table
             for (Product product: tempProduct) {
                 Object[] productToAdd = {product.getProductID(), product.getProductName(),
                     product.getProductDescription(), product.getProductPrice(),
@@ -328,13 +352,23 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
                 model.addRow(productToAdd);
                 productmanager.ProductManager.betterWriteToFile();
             }
+            
             loadedObjStream.close();
-            jTable1.updateUI();  
+            jTable1.invalidate();
+            jTable1.repaint();  
 
         } catch (Exception e){
             e.getStackTrace();
             System.out.print(e);
+            JOptionPane.showMessageDialog(errors, e);
         }
+    }
+    
+    // this will run everything static for the main method
+    public static void runLoader() {
+        
+        ProductManagerGUI newGUI = new ProductManagerGUI();
+        newGUI.betterLoadFiles();
     }
     
     /**
@@ -363,17 +397,18 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
             java.util.logging.Logger.getLogger(ProductManagerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ProductManagerGUI().setVisible(true);
-                
+                new ProductManagerGUI().setVisible(true);  
+                runLoader();
             }
         });
+        
     }
     
-
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -384,7 +419,6 @@ public class ProductManagerGUI extends javax.swing.JFrame implements Serializabl
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
