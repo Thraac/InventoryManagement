@@ -7,15 +7,10 @@ package my.productmanager;
 import productmanager.*;
 import javax.swing.table.*;
 import java.util.ArrayList;
-import java.io.File;
-import java.util.Scanner;
 import java.io.*;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 
 
 public class ProductManagerGUI extends javax.swing.JFrame {
@@ -179,7 +174,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(jTable1);
 
-        jButton3.setText("Test");
+        jButton3.setText("Edit");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -191,15 +186,17 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(76, 76, 76)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -241,7 +238,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField4ActionPerformed
 
-    // add in the ADD function for inventory
+    // add in the ADD button
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
         try {
@@ -272,7 +269,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField5ActionPerformed
    
-    // This is the REMOVE function
+    // This is the REMOVE button
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         try {
@@ -302,8 +299,43 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         jTable1.repaint(); 
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    // This is the EDIT button
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        try {
+            model = (DefaultTableModel) jTable1.getModel();
+            Product holdProduct = null;
+            int counter = -1;
+            // gets input data
+            String newName = jTextField1.getText();
+            String newDescription = jTextField2.getText();
+            double newPrice = Double.parseDouble(jTextField3.getText());
+            int newQuantity = Integer.parseInt(jTextField4.getText());
+            int newID = Integer.parseInt(jTextField5.getText());
+            // goes through list looking for ID
+            for (Product product : tempProduct){
+                
+                counter++;                
+                int holdID = product.getProductID();
+                // removes data
+                if (holdID == newID) {
+                    holdProduct = product;
+                    model.removeRow(counter);  
+                }  
+            }
+            // actually makes the remove and the add 
+            tempProduct.remove(holdProduct);
+            ProductManager.addProduct(newID, newName, newDescription, newPrice, newQuantity);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(errors, "In order to edit an item, please enter the right item ID.\n" + 
+                    "As well as have all other fields filled out with the information you want the item to have.");
+            System.out.print(e);
+        }
+        
+        clearFields();
+        addProductsToTable();
+        jTable1.invalidate();
+        jTable1.repaint();
     }//GEN-LAST:event_jButton3ActionPerformed
     
     ArrayList<Product> tempProduct = ProductManager.getProductTable();
