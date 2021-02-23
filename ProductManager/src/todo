@@ -5,24 +5,29 @@ Done
         Displays current inventory
         Add to inventory
         Take in information and save it
-
     Sort data by ID
-
     Save information to a text file
         This is so that it can remember what was in it
+    Add remove
+     Catch errors and have pop ups (Need to add to each option)
+    Data loads on start up
+    Add edit 
+    MVP Reached
 
 Next to do
-    Add remove
-    Add edit 
-
-    Catch errors and have pop ups (Need to add to each option)
+    Refine comments, refine code, do tests
 
 Later to do
     Search option
-    have the information load when program launches
-        It does "load" on start up, but the ui does not update because the table is not static
-            Will work on getting jTable1.updateUI(); to work on launch later
 
 Way Later to do
     update data storage from file to DB
 
+
+
+MVP:
+    GUI (x)
+    Table that shows data (x)
+    Add, Remove, Edit data (x,x,x)
+    Sorted by ID (x)
+    Saves data and loads data from file (x,x)
