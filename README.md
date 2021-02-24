@@ -2,7 +2,7 @@
 A Java GUI system that is used to manage inventory
 
 # Examples
-TBA
+![Example of GUI](https://github.com/Thraac/InventoryManagement/blob/master/ProductManager/src/gui%20for%20java%20project.PNG)
 
 # What I Learned
 * Creating a GUI that is Java based instead of web based
