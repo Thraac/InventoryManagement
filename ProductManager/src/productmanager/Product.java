@@ -4,23 +4,23 @@
  * and open the template in the editor.
  */
 package productmanager;
+import java.io.Serializable;
 
-/**
- *
- * @author Nation
- */
-public class Product {
+public class Product implements Serializable{
     private String productName;
     private String productDescription;
     private double productPrice;
     private int productQuantity;
+    private int productID;
 
     // basic constructor 
-    Product (String productName, String productDescription, double productPrice, int productQuantity) {
+    Product ( int productID, String productName, String productDescription, double productPrice,
+            int productQuantity) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.productPrice = productPrice;
         this.productQuantity = productQuantity;
+        this.productID = productID;
     }
 
     // Setters and getters
@@ -50,5 +50,20 @@ public class Product {
     }
     public int getProductQuantity() {
         return productQuantity;
+    }
+    
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+    public int getProductID() {
+        return productID;
+    }
+    
+    // used for saving information in the format Product wants
+    public String stringSave(){
+        String saveString = String.format("{%d, %s, %s, %.2f, %d}\n", getProductID(),
+                getProductName(), getProductDescription(),
+                getProductPrice(), getProductQuantity());
+        return saveString;
     }
 }

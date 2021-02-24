@@ -5,39 +5,37 @@
  */
 package productmanager;
 import my.productmanager.ProductManagerGUI;
-import java.util.ArrayList;
+import java.util.ArrayList; 
+import java.io.*;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import javax.swing.*;
 
-public class ProductManager {
+import java.io.Serializable;
+
+public class ProductManager implements Serializable{
     
     private static ArrayList<Product> productTable = new ArrayList<Product>();
+    JFrame errors = new JFrame();
     
     /**
      * @param args the command line arguments
      */
     public static void addProduct(int productID, String productName, String productDescription,
             double productPrice,int productQuantity) {
-        
+       
         productTable.add(new Product(productID, productName, productDescription, 
                 productPrice, productQuantity));
+       
     }
     
-    public static Product mostRecent() {
-        Product newest = productTable.get(productTable.size()-1);
-        return newest;
-    }
-    
+    // retrieves the Table information (ArrayList)
     public static ArrayList<Product> getProductTable(){
         sortID(productTable);
         return productTable;
     }
-    
-    public static Product getProductFor(){
-        for (Product product : productTable){
-            return product;
-        }
-        return null;
-    }
-    
+        
+    // Sorts the items by the ID
     public static void sortID(ArrayList<Product> productTable){
         int array_size = productTable.size();
 
@@ -56,9 +54,23 @@ public class ProductManager {
             productTable.set(i, temp);
         }
     }
+        
+    public static void betterWriteToFile(){
+        try {
+            FileOutputStream file = new FileOutputStream("InventoryData.txt");
+            ObjectOutputStream output = new ObjectOutputStream(file);
+            for (Product product : productTable){
+                output.writeObject(product);
+            }
+            output.close();
+        } catch (Exception e){
+            e.getStackTrace();
+        }
+    }
     
     public static void main(String[] args) {
         // TODO code application logic here
+        ProductManagerGUI.main(args);
         
     }
     

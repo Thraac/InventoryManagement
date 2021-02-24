@@ -20,7 +20,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
     public ProductManagerGUI() {
         initComponents();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -48,8 +48,9 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Product Management");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Product Management"));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Product Information"));
         jPanel1.setToolTipText("");
         jPanel1.setName(""); // NOI18N
 
