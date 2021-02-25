@@ -93,17 +93,5 @@ public class ProductManagerTest {
         
         assertEquals(false, beforeSort.equals(afterSort));
         
-    }
-
-    /**
-     * Test of betterWriteToFile method, of class ProductManager.
-     */
-    @Test
-    public void testBetterWriteToFile() {
-        System.out.println("betterWriteToFile");
-        ProductManager.betterWriteToFile();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-    
+    }    
 }
