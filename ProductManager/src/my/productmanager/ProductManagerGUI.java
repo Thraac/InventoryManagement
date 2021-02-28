@@ -46,8 +46,6 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         DisplayPane = new javax.swing.JScrollPane();
         DisplayTable = new javax.swing.JTable();
         EditButton = new javax.swing.JButton();
-        SearchTextField = new javax.swing.JTextField();
-        SearchLabel = new javax.swing.JLabel();
         SearchButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -180,15 +178,6 @@ public class ProductManagerGUI extends javax.swing.JFrame {
             }
         });
 
-        SearchTextField.setName("ProductNameField"); // NOI18N
-        SearchTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SearchTextFieldActionPerformed(evt);
-            }
-        });
-
-        SearchLabel.setText("Search");
-
         SearchButton.setText("Search");
         SearchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -201,25 +190,19 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(SearchLabel)
+                        .addComponent(ProductInformationPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(47, 47, 47)
+                        .addComponent(AddButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(SearchTextField)
+                        .addComponent(RemoveButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(SearchButton))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(ProductInformationPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(76, 76, 76)
-                            .addComponent(AddButton)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(RemoveButton)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(EditButton))))
+                        .addComponent(EditButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(SearchButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(DisplayPane, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -228,7 +211,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(DisplayPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(ProductInformationPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -236,14 +219,9 @@ public class ProductManagerGUI extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(RemoveButton)
                             .addComponent(AddButton)
-                            .addComponent(EditButton))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(SearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(SearchLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(SearchButton))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(EditButton)
+                            .addComponent(SearchButton))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         ProductInformationPane.getAccessibleContext().setAccessibleName("");
@@ -367,12 +345,32 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         DisplayTable.repaint();
     }//GEN-LAST:event_EditButtonActionPerformed
 
-    private void SearchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_SearchTextFieldActionPerformed
-
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButtonActionPerformed
         // TODO add your handling code here:
+        String holdInputString = ProductIDTextField.getText();
+        model = (DefaultTableModel) DisplayTable.getModel();
+        
+        
+        if (holdInputString.isEmpty()) {
+            addProductsToTable();
+        }
+        
+        else {
+            int holdInputInt = Integer.parseInt(holdInputString);
+            for (Product product: tempProduct) {
+                
+                if (product.getProductID() == holdInputInt) {
+                    
+                    Object[] productToAdd = {product.getProductID(), product.getProductName(),
+                        product.getProductDescription(), product.getProductPrice(),
+                        product.getProductQuantity()};
+                    
+                    model.setNumRows(0);
+                    model.addRow(productToAdd);
+                }
+            }   
+        }
+        ProductIDTextField.setText("");
     }//GEN-LAST:event_SearchButtonActionPerformed
     
     ArrayList<Product> tempProduct = ProductManager.getProductTable();
@@ -514,7 +512,5 @@ public class ProductManagerGUI extends javax.swing.JFrame {
     private javax.swing.JTextField ProductQuantityTextField;
     private javax.swing.JButton RemoveButton;
     private javax.swing.JButton SearchButton;
-    private javax.swing.JLabel SearchLabel;
-    private javax.swing.JTextField SearchTextField;
     // End of variables declaration//GEN-END:variables
 }
