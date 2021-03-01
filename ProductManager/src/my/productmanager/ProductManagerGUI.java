@@ -249,6 +249,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
     private void AddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddButtonActionPerformed
         
         try {
+            // gets the details and adds them to the arraylist
             String newName = ProductNameTextField.getText();
             String newDescription = ProductDescriptionTextField.getText();
             double newPrice = Double.parseDouble(ProductPriceTextField.getText());
@@ -259,6 +260,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
                     newQuantity);
         
         } catch (Exception e) {
+            
             JOptionPane.showMessageDialog(errors, "Failed to add product\n" + 
                     "Please fill out all forms before adding a product\n\n"
                     + "ID should be a number\n" + "Name should be a word\n" + 
@@ -267,9 +269,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         }
         
         clearFields();
-        addProductsToTable();
-        DisplayTable.invalidate();
-        DisplayTable.repaint(); 
+        addProductsToTable(); 
     }//GEN-LAST:event_AddButtonActionPerformed
 
     private void ProductIDTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProductIDTextFieldActionPerformed
@@ -344,33 +344,35 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         DisplayTable.invalidate();
         DisplayTable.repaint();
     }//GEN-LAST:event_EditButtonActionPerformed
-
+    
+    // This is the Search button
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButtonActionPerformed
-        // TODO add your handling code here:
+        // gets the input as a string for latter
         String holdInputString = ProductIDTextField.getText();
         model = (DefaultTableModel) DisplayTable.getModel();
         
         
         if (holdInputString.isEmpty()) {
+            // if there is nothing in the ID input then it will reload everything
             addProductsToTable();
         }
         
         else {
+            // if there is something in the ID input, find it
             int holdInputInt = Integer.parseInt(holdInputString);
+            
             for (Product product: tempProduct) {
-                
                 if (product.getProductID() == holdInputInt) {
-                    
+                    // if there is a match display only that match
                     Object[] productToAdd = {product.getProductID(), product.getProductName(),
                         product.getProductDescription(), product.getProductPrice(),
                         product.getProductQuantity()};
-                    
                     model.setNumRows(0);
                     model.addRow(productToAdd);
                 }
             }   
         }
-        ProductIDTextField.setText("");
+        clearFields();
     }//GEN-LAST:event_SearchButtonActionPerformed
     
     ArrayList<Product> tempProduct = ProductManager.getProductTable();
@@ -380,7 +382,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
     
     // clears the text fields     
     public void clearFields() {
-        
+        // takes all the textfields and blanks them
         ProductNameTextField.setText("");
         ProductDescriptionTextField.setText("");
         ProductPriceTextField.setText("");
@@ -395,13 +397,12 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         model.setRowCount(0);
         
         for (Product product : tempProduct) {
+            // adds the data to the table
             Object[] productToAdd = {product.getProductID(), product.getProductName(),
                 product.getProductDescription(), product.getProductPrice(),
                 product.getProductQuantity()};
             model.addRow(productToAdd);
             ProductManager.sortID(tempProduct);
-            DisplayTable.invalidate();
-            DisplayTable.repaint();  
             productmanager.ProductManager.betterWriteToFile();
         }
     }
