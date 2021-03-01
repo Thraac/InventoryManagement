@@ -69,6 +69,12 @@ public class ProductTest {
         
         test.setProductDescription("Disco");
         assertEquals("Disco" , test.getProductDescription());
+        
+        test.setProductDescription("More than one word");
+        assertEquals("More than one word" , test.getProductDescription());
+        
+        test.setProductDescription("lower");
+        assertEquals("lower" , test.getProductDescription());
     }
 
     /**
@@ -94,6 +100,12 @@ public class ProductTest {
 
         test.setProductPrice(12.99);
         assertEquals(12.99 , test.getProductPrice(), 0);
+        
+        test.setProductPrice(3);
+        assertEquals(3.0 , test.getProductPrice(), 0);
+        
+        test.setProductPrice(123456789123456789.12);
+        assertEquals(123456789123456789.12 , test.getProductPrice(), 0);
     }
 
     /**
@@ -119,6 +131,12 @@ public class ProductTest {
         
         test.setProductQuantity(382);
         assertEquals(382, test.getProductQuantity());
+        
+        test.setProductQuantity(1);
+        assertEquals(1, test.getProductQuantity());
+        
+        test.setProductQuantity(999999999);
+        assertEquals(999999999, test.getProductQuantity());
     }
 
     /**
@@ -144,6 +162,12 @@ public class ProductTest {
         
         test.setProductID(13);
         assertEquals(13, test.getProductID());
+        
+        test.setProductID(1);
+        assertEquals(1, test.getProductID());
+        
+        test.setProductID(123456);
+        assertEquals(123456, test.getProductID());
     }
 
     /**
