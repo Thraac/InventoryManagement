@@ -13,15 +13,22 @@ Done
     Data loads on start up
     Add edit 
     MVP Reached
-
-Next to do
-    Refine comments, refine code, do tests
-
-Later to do
     Search option
 
-Way Later to do
+Next to do
     update data storage from file to DB
+
+Later to do
+    Expand search/remove/edit functions to more than just ID
+        Make sure that numbers are positive as well
+        Check for duplicates as well
+            Give an error window, that says that ID/Name already exists
+    Refine comments, refine code, do tests
+
+Way Later to do
+    Turn it into a web app
+    Add in AWS
+    
 
 
 
