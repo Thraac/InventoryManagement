@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.io.*;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.swing.*;
 
 
@@ -273,6 +277,9 @@ public class ProductManagerGUI extends javax.swing.JFrame {
             int newQuantity = Integer.parseInt(ProductQuantityTextField.getText());
             int newID = Integer.parseInt(ProductIDTextField.getText());
 
+            MySQLManager.addToDatabase(newName, newDescription, newPrice,newQuantity);
+            
+            // old way
             ProductManager.addProduct(newID, newName, newDescription, newPrice, 
                     newQuantity);
         
@@ -394,14 +401,21 @@ public class ProductManagerGUI extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        SQLManager.addToDatabase("Test", "Database", 2.99, 56);
-        
+//        MySQLManager.addToDatabase("Test", "Database", 2.99, 56);
+        newAddProductsToTable();
     }//GEN-LAST:event_jButton2ActionPerformed
     
     ArrayList<Product> tempProduct = ProductManager.getProductTable();
     static ProductManagerGUI newGUI = new ProductManagerGUI();
     DefaultTableModel model = null;
     JFrame errors = new JFrame();
+    
+    static String myDriver = "java.sql.Driver";
+    static String myUrl = "jdbc:mysql://localhost:3306/mysql";
+    static String thePassword = Secrets.getPass();
+    static String theUser = "root";
+
+    
     
     // clears the text fields     
     public void clearFields() {
@@ -428,6 +442,38 @@ public class ProductManagerGUI extends javax.swing.JFrame {
             ProductManager.sortID(tempProduct);
             productmanager.ProductManager.betterWriteToFile();
         }
+    }
+    
+    
+    public void newAddProductsToTable(){
+        try {
+            Class.forName(myDriver);  
+            Connection conn = DriverManager.getConnection(myUrl, theUser, thePassword);
+            Statement st = conn.createStatement();   
+                        
+            String control = "SELECT * FROM ProductTable;";
+            ResultSet rs = st.executeQuery(control);
+            
+            model = (DefaultTableModel) DisplayTable.getModel();
+            model.setRowCount(0);
+                        
+            while (rs.next()){
+                int productId = Integer.parseInt(rs.getString("productId"));
+                String productName = rs.getString("productName");
+                String productDescription = rs.getString("productDescription");
+                double productPrice = Double.parseDouble(rs.getString("productPrice"));
+                int productQuantity = Integer.parseInt(rs.getString("productQuantity"));
+                Object[] productToAdd = {productId, productName, productDescription, productPrice, productQuantity};
+                model.addRow(productToAdd);
+            }             
+            
+            conn.close();
+        } 
+
+        catch (Exception e){
+            System.err.println("Got an exception!");
+            System.err.println(e.getMessage());  
+        } 
     }
     
     // this is for loading files on launch
