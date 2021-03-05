@@ -30,6 +30,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton1 = new javax.swing.JButton();
         ProductInformationPane = new javax.swing.JPanel();
         ProductNameLabel = new javax.swing.JLabel();
         ProductNameTextField = new javax.swing.JTextField();
@@ -47,6 +48,9 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         DisplayTable = new javax.swing.JTable();
         EditButton = new javax.swing.JButton();
         SearchButton = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+
+        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Product Management");
@@ -185,6 +189,13 @@ public class ProductManagerGUI extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setText("Test DB");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -206,6 +217,10 @@ public class ProductManagerGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(DisplayPane, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addGap(366, 366, 366))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -221,7 +236,9 @@ public class ProductManagerGUI extends javax.swing.JFrame {
                             .addComponent(AddButton)
                             .addComponent(EditButton)
                             .addComponent(SearchButton))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addGap(42, 42, 42))
         );
 
         ProductInformationPane.getAccessibleContext().setAccessibleName("");
@@ -374,6 +391,12 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         }
         clearFields();
     }//GEN-LAST:event_SearchButtonActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        SQLManager.addToDatabase("Test", "Database", 2.99, 56);
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
     
     ArrayList<Product> tempProduct = ProductManager.getProductTable();
     static ProductManagerGUI newGUI = new ProductManagerGUI();
@@ -513,5 +536,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
     private javax.swing.JTextField ProductQuantityTextField;
     private javax.swing.JButton RemoveButton;
     private javax.swing.JButton SearchButton;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     // End of variables declaration//GEN-END:variables
 }
