@@ -52,7 +52,6 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         DisplayTable = new javax.swing.JTable();
         EditButton = new javax.swing.JButton();
         SearchButton = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
 
         jButton1.setText("jButton1");
 
@@ -193,13 +192,6 @@ public class ProductManagerGUI extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Test DB");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -221,10 +213,6 @@ public class ProductManagerGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(DisplayPane, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(366, 366, 366))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,9 +228,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
                             .addComponent(AddButton)
                             .addComponent(EditButton)
                             .addComponent(SearchButton))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(42, 42, 42))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         ProductInformationPane.getAccessibleContext().setAccessibleName("");
@@ -275,25 +261,18 @@ public class ProductManagerGUI extends javax.swing.JFrame {
             String newDescription = ProductDescriptionTextField.getText();
             double newPrice = Double.parseDouble(ProductPriceTextField.getText());
             int newQuantity = Integer.parseInt(ProductQuantityTextField.getText());
-            int newID = Integer.parseInt(ProductIDTextField.getText());
-
+            
             MySQLManager.addToDatabase(newName, newDescription, newPrice,newQuantity);
             
-            // old way
-            ProductManager.addProduct(newID, newName, newDescription, newPrice, 
-                    newQuantity);
-        
         } catch (Exception e) {
-            
             JOptionPane.showMessageDialog(errors, "Failed to add product\n" + 
                     "Please fill out all forms before adding a product\n\n"
-                    + "ID should be a number\n" + "Name should be a word\n" + 
+                    + "Name should be a word\n" + 
                     "Description should be a few words\n"
                     + "Price should be a decimal\n" + "Quantity should be a number");
         }
-        
+        newAddProductsToTable();
         clearFields();
-        addProductsToTable(); 
     }//GEN-LAST:event_AddButtonActionPerformed
 
     private void ProductIDTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProductIDTextFieldActionPerformed
@@ -302,114 +281,31 @@ public class ProductManagerGUI extends javax.swing.JFrame {
    
     // This is the REMOVE button
     private void RemoveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveButtonActionPerformed
-
-        try {
-            int ID = Integer.parseInt(ProductIDTextField.getText());
-            model = (DefaultTableModel) DisplayTable.getModel();
-            Product holdProduct = null;
-            int counter = -1; 
-            
-            for (Product product: tempProduct) {
-                counter++;
-                int holdID = product.getProductID();
-                if (holdID == ID) {
-                    holdProduct = product;
-                    model.removeRow(counter);
-                }
-            }
-            // removes it from the table, and removes it from the file if program closes
-            tempProduct.remove(holdProduct);
-            
-        } catch (Exception e){
-            JOptionPane.showMessageDialog(errors, "Please enter the ID number of the item you would like to remove.");
-        }
-
-        ProductManager.betterWriteToFile();
-        clearFields();       
-        DisplayTable.invalidate();
-        DisplayTable.repaint(); 
+        removeFromDatabase();
+        newAddProductsToTable();
+        clearFields();
     }//GEN-LAST:event_RemoveButtonActionPerformed
 
     // This is the EDIT button
     private void EditButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditButtonActionPerformed
-        // TODO add your handling code here:
-        try {
-            model = (DefaultTableModel) DisplayTable.getModel();
-            Product holdProduct = null;
-            int counter = -1;
-            // gets input data
-            String newName = ProductNameTextField.getText();
-            String newDescription = ProductDescriptionTextField.getText();
-            double newPrice = Double.parseDouble(ProductPriceTextField.getText());
-            int newQuantity = Integer.parseInt(ProductQuantityTextField.getText());
-            int newID = Integer.parseInt(ProductIDTextField.getText());
-            // goes through list looking for ID
-            for (Product product : tempProduct){
-                
-                counter++;                
-                int holdID = product.getProductID();
-                // removes data
-                if (holdID == newID) {
-                    holdProduct = product;
-                    model.removeRow(counter);  
-                }  
-            }
-            // actually makes the remove and the add 
-            tempProduct.remove(holdProduct);
-            ProductManager.addProduct(newID, newName, newDescription, newPrice, newQuantity);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(errors, "In order to edit an item, please enter the right item ID.\n" + 
-                    "As well as have all other fields filled out with the information you want the item to have.");
-            System.out.print(e);
-        }
-        
+        updateDatabase();
         clearFields();
-        addProductsToTable();
-        DisplayTable.invalidate();
-        DisplayTable.repaint();
+        newAddProductsToTable();
     }//GEN-LAST:event_EditButtonActionPerformed
     
     // This is the Search button
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButtonActionPerformed
-        // gets the input as a string for latter
-        String holdInputString = ProductIDTextField.getText();
-        model = (DefaultTableModel) DisplayTable.getModel();
-        
-        
-        if (holdInputString.isEmpty()) {
-            // if there is nothing in the ID input then it will reload everything
-            addProductsToTable();
-        }
-        
-        else {
-            // if there is something in the ID input, find it
-            int holdInputInt = Integer.parseInt(holdInputString);
-            
-            for (Product product: tempProduct) {
-                if (product.getProductID() == holdInputInt) {
-                    // if there is a match display only that match
-                    Object[] productToAdd = {product.getProductID(), product.getProductName(),
-                        product.getProductDescription(), product.getProductPrice(),
-                        product.getProductQuantity()};
-                    model.setNumRows(0);
-                    model.addRow(productToAdd);
-                }
-            }   
-        }
+        searchDatabase();
         clearFields();
     }//GEN-LAST:event_SearchButtonActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-//        MySQLManager.addToDatabase("Test", "Database", 2.99, 56);
-        newAddProductsToTable();
-    }//GEN-LAST:event_jButton2ActionPerformed
     
+    // GUI
     ArrayList<Product> tempProduct = ProductManager.getProductTable();
     static ProductManagerGUI newGUI = new ProductManagerGUI();
     DefaultTableModel model = null;
     JFrame errors = new JFrame();
     
+    // Set up connections
     static String myDriver = "java.sql.Driver";
     static String myUrl = "jdbc:mysql://localhost:3306/mysql";
     static String thePassword = Secrets.getPass();
@@ -426,24 +322,6 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         ProductQuantityTextField.setText("");
         ProductIDTextField.setText("");
     }
-
-    // this is the one that affects the add button    
-    public void addProductsToTable(){
-        
-        model = (DefaultTableModel) DisplayTable.getModel();
-        model.setRowCount(0);
-        
-        for (Product product : tempProduct) {
-            // adds the data to the table
-            Object[] productToAdd = {product.getProductID(), product.getProductName(),
-                product.getProductDescription(), product.getProductPrice(),
-                product.getProductQuantity()};
-            model.addRow(productToAdd);
-            ProductManager.sortID(tempProduct);
-            productmanager.ProductManager.betterWriteToFile();
-        }
-    }
-    
     
     public void newAddProductsToTable(){
         try {
@@ -463,66 +341,113 @@ public class ProductManagerGUI extends javax.swing.JFrame {
                 String productDescription = rs.getString("productDescription");
                 double productPrice = Double.parseDouble(rs.getString("productPrice"));
                 int productQuantity = Integer.parseInt(rs.getString("productQuantity"));
-                Object[] productToAdd = {productId, productName, productDescription, productPrice, productQuantity};
-                model.addRow(productToAdd);
+                Object[] productToAddToTable = {productId, productName, productDescription, productPrice, productQuantity};
+                model.addRow(productToAddToTable);
             }             
-            
             conn.close();
-        } 
-
+        }
         catch (Exception e){
-            System.err.println("Got an exception!");
+            System.err.println("Error loading data");
             System.err.println(e.getMessage());  
         } 
     }
     
-    // this is for loading files on launch
-    public void betterLoadFiles(){
-        
-        model = (DefaultTableModel) DisplayTable.getModel();
-        
-        try {
-            // file loading from
-            FileInputStream fileStream = new FileInputStream("InventoryData.txt");
-            ObjectInputStream loadedObjStream = new ObjectInputStream(fileStream); 
-            boolean cont = true;
-            
-            // this loads all the data from the file and turns it back into Product
+    public void searchDatabase(){
+        String holdInputString = ProductIDTextField.getText();
+        if (holdInputString.isEmpty()){
+            newAddProductsToTable();
+        } 
+        else {  
             try {
-                while (cont) {
-                    Product loadedProduct = (Product) loadedObjStream.readObject();
-                    if (loadedProduct != null) {
-                        tempProduct.add(loadedProduct);
-                    } else {
-                        cont = false;
-                    }
+                Class.forName(myDriver);  
+                Connection conn = DriverManager.getConnection(myUrl, theUser, thePassword);
+                Statement st = conn.createStatement();  
+                int searchedNumber = Integer.parseInt(holdInputString);
+
+                String search = String.format("SELECT * FROM ProductTable WHERE ProductTable.`productId` = '%d';", searchedNumber);
+                ResultSet rs = st.executeQuery(search);
+
+                model = (DefaultTableModel) DisplayTable.getModel();
+                model.setRowCount(0);
+
+                if(rs.next()){
+                    int productId = Integer.parseInt(rs.getString("productId"));
+                    String productName = rs.getString("productName");
+                    String productDescription = rs.getString("productDescription");
+                    double productPrice = Double.parseDouble(rs.getString("productPrice"));
+                    int productQuantity = Integer.parseInt(rs.getString("productQuantity"));
+
+                    Object[] productToAddToTable = {productId, productName, productDescription, productPrice, productQuantity};
+                    model.addRow(productToAddToTable);
                 }
-            } catch (Exception e) {
-                System.out.print(e);
+                if(model.getRowCount() == 0){
+                    JOptionPane.showMessageDialog(errors, "Failed to find the item searched");
+                    newAddProductsToTable();
+                }
+                conn.close();
+            }
+            catch (Exception e) {
+                System.err.println("Error searching data");
+                System.err.println(e.getMessage()); 
+            }
+        }
+    } 
+    
+    public void removeFromDatabase(){
+        String holdInputString = ProductIDTextField.getText();
+        if(holdInputString.isEmpty()){
+            JOptionPane.showMessageDialog(errors, "You did not input an ID.");
+        }
+        else {
+            try{
+                Class.forName(myDriver);  
+                Connection conn = DriverManager.getConnection(myUrl, theUser, thePassword);
+                Statement st = conn.createStatement();  
+                int searchedNumber = Integer.parseInt(holdInputString);
+
+                String search = String.format("DELETE FROM ProductTable WHERE ProductTable.`productId` = '%d';", searchedNumber);
+                st.executeUpdate(search);
                 
+                model = (DefaultTableModel) DisplayTable.getModel(); 
+                conn.close();
+            }
+            catch (Exception e){
+                System.err.println("Error searching data");
+                System.err.println(e.getMessage()); 
             }
             
-            // this adds everything back into the table
-            for (Product product: tempProduct) {
-                Object[] productToAdd = {product.getProductID(), product.getProductName(),
-                    product.getProductDescription(), product.getProductPrice(),
-                    product.getProductQuantity()};
-
-                model.addRow(productToAdd);
-                productmanager.ProductManager.betterWriteToFile();
-            }
-            
-            loadedObjStream.close();
-            DisplayTable.invalidate();
-            DisplayTable.repaint();  
-
-        } catch (Exception e){
-            e.getStackTrace();
-            System.out.print(e);
-            JOptionPane.showMessageDialog(errors, e);
         }
     }
+    
+    public void updateDatabase(){
+        // get the new data
+        int searchedNumber = Integer.parseInt(ProductIDTextField.getText());
+        String newName = ProductNameTextField.getText();
+        String newDescription = ProductDescriptionTextField.getText();
+        double newPrice = Double.parseDouble(ProductPriceTextField.getText());
+        int newQuantity = Integer.parseInt(ProductIDTextField.getText());
         
+        try {
+            // makes the connection and the update
+            Class.forName(myDriver);  
+            Connection conn = DriverManager.getConnection(myUrl, theUser, thePassword);
+            Statement st = conn.createStatement();  
+            
+            String search = String.format("UPDATE ProductTable SET productName = '%s',"
+                    + " productDescription = '%s', productPrice = %.2f,"
+                    + " productQuantity = %d WHERE ProductTable.`productId` = %d;",
+                    newName, newDescription, newPrice, newQuantity, searchedNumber);
+            st.executeUpdate(search);
+
+            model = (DefaultTableModel) DisplayTable.getModel(); 
+            conn.close();
+        }             
+        catch (Exception e){
+            System.err.println("Error loading data");
+            System.err.println(e.getMessage());  
+        }         
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -554,7 +479,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {                
                 newGUI.setVisible(true);
-                newGUI.betterLoadFiles();
+                newGUI.newAddProductsToTable();
             }
             
         });
@@ -583,6 +508,5 @@ public class ProductManagerGUI extends javax.swing.JFrame {
     private javax.swing.JButton RemoveButton;
     private javax.swing.JButton SearchButton;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     // End of variables declaration//GEN-END:variables
 }
