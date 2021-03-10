@@ -14,7 +14,7 @@ public class Product implements Serializable{
     private int productID;
 
     // basic constructor 
-    Product ( int productID, String productName, String productDescription, double productPrice,
+    public Product ( int productID, String productName, String productDescription, double productPrice,
             int productQuantity) {
         this.productName = productName;
         this.productDescription = productDescription;
