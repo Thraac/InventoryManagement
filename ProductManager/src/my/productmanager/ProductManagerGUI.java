@@ -7,9 +7,6 @@ package my.productmanager;
 import productmanager.*;
 import javax.swing.table.*;
 import java.util.ArrayList;
-import java.io.*;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -300,7 +297,7 @@ public class ProductManagerGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_SearchButtonActionPerformed
     
     // GUI
-    ArrayList<Product> tempProduct = ProductManager.getProductTable();
+//    ArrayList<Product> tempProduct = ProductManager.getProductTable();
     static ProductManagerGUI newGUI = new ProductManagerGUI();
     DefaultTableModel model = null;
     JFrame errors = new JFrame();
