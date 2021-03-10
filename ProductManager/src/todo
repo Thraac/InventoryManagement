@@ -14,9 +14,12 @@ Done
     Add edit 
     MVP Reached
     Search option
+    update data storage from file to DB
+        Complete: Add/search/remove function
+        Create edit function
 
 Next to do
-    update data storage from file to DB
+    Refine comments, refine code, do tests
 
 Later to do
     Expand search/remove/edit functions to more than just ID
